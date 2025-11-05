@@ -1,17 +1,64 @@
-// Uncomment the code below and write your tests
-/* import {  simpleCalculator, Action } from './index';
+import { simpleCalculator, Action } from './index';
+
+const TEST_TIMEOUT_MS = 30000;
 
 const testCases = [
-    { a: 1, b: 2, action: Action.Add, expected: 3 },
-    { a: 2, b: 2, action: Action.Add, expected: 4 },
-    { a: 3, b: 2, action: Action.Add, expected: 5 },
-    // continue cases for other actions    
-]; */
+  {
+    description: 'should add two numbers',
+    a: 3,
+    b: 4,
+    action: Action.Add,
+    expected: 7,
+  },
+  {
+    description: 'should subtract two numbers',
+    a: 40,
+    b: 8,
+    action: Action.Subtract,
+    expected: 32,
+  },
+  {
+    description: 'should multiply two numbers',
+    a: 25,
+    b: 4,
+    action: Action.Multiply,
+    expected: 100,
+  },
+  {
+    description: 'should divide two numbers',
+    a: 81,
+    b: 9,
+    action: Action.Divide,
+    expected: 9,
+  },
+  {
+    description: 'should exponentiate two numbers',
+    a: 3,
+    b: 2,
+    action: Action.Exponentiate,
+    expected: 9,
+  },
+  {
+    description: 'should return null for invalid action',
+    a: 234,
+    b: 123,
+    action: 'Hello NodeJS',
+    expected: null,
+  },
+  {
+    description: 'should return null for invalid arguments',
+    a: '11',
+    b: 3,
+    action: Action.Add,
+    expected: null,
+  },
+];
 
 describe('simpleCalculator', () => {
-  // This test case is just to run this test suite, remove it when you write your own tests
-  test('should blah-blah', () => {
-    expect(true).toBe(true);
+  beforeAll(() => {
+    jest.setTimeout(TEST_TIMEOUT_MS);
   });
-  // Consider to use Jest table tests API to test all cases above
+  test.each(testCases)('$description', ({ a, b, action, expected }) => {
+    expect(simpleCalculator({ a, b, action })).toEqual(expected);
+  });
 });
