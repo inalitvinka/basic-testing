@@ -21,10 +21,14 @@ describe('resolveValue', () => {
 });
 
 describe('throwError', () => {
-  test('should throw error with provided message', () => {
-    const errorMsg = 'I am an error message!';
-    expect(() => throwError(errorMsg)).toThrow(errorMsg);
-  });
+  test(
+    'should throw error with provided message',
+    () => {
+      const errorMsg = 'I am an error message!';
+      expect(() => throwError(errorMsg)).toThrow(errorMsg);
+    },
+    TEST_TIMEOUT_MS,
+  );
 
   test(
     'should throw error with default message if message is not provided',
@@ -47,7 +51,11 @@ describe('throwCustomError', () => {
 });
 
 describe('rejectCustomError', () => {
-  test('should reject custom error', async () => {
-    await expect(rejectCustomError).rejects.toThrow(MyAwesomeError);
-  });
+  test(
+    'should reject custom error',
+    async () => {
+      await expect(rejectCustomError).rejects.toThrow(MyAwesomeError);
+    },
+    TEST_TIMEOUT_MS,
+  );
 });
