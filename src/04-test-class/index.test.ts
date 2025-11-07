@@ -1,8 +1,10 @@
+import lodash from 'lodash';
 import {
   getBankAccount,
   BankAccount,
   InsufficientFundsError,
   TransferFailedError,
+  SynchronizationFailedError,
 } from '.';
 
 const TEST_TIMEOUT_MS = 30000;
@@ -15,6 +17,10 @@ describe('BankAccount', () => {
   beforeEach(() => {
     sourceAccount = getBankAccount(initialBalance);
     targetAccount = getBankAccount(initialBalance);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   test(
@@ -77,15 +83,46 @@ describe('BankAccount', () => {
     expect(targetAccount.getBalance()).toBe(initialBalance + amount);
   });
 
-  test('fetchBalance should return number in case if request did not failed', async () => {
-    // Write your tests here
-  });
+  test(
+    'fetchBalance should return number in case if request did not failed',
+    async () => {
+      const randomBalance = 75;
+      const requestNotFailed = 1;
+      jest
+        .spyOn(lodash, 'random')
+        .mockImplementationOnce(() => randomBalance)
+        .mockImplementationOnce(() => requestNotFailed);
+      const result = await sourceAccount.fetchBalance();
+      expect(result).toBe(75);
+    },
+    TEST_TIMEOUT_MS,
+  );
 
-  test('should set new balance if fetchBalance returned number', async () => {
-    // Write your tests here
-  });
+  test(
+    'should set new balance if fetchBalance returned number',
+    async () => {
+      const mockedBalance = 42;
+      jest
+        .spyOn(sourceAccount, 'fetchBalance')
+        .mockResolvedValue(mockedBalance);
+      await sourceAccount.synchronizeBalance();
+      expect(sourceAccount.getBalance()).toEqual(mockedBalance);
+    },
+    TEST_TIMEOUT_MS,
+  );
 
-  test('should throw SynchronizationFailedError if fetchBalance returned null', async () => {
-    // Write your tests here
-  });
+  test(
+    'should throw SynchronizationFailedError if fetchBalance returned null',
+    async () => {
+      const mockedBalance = null;
+      jest
+        .spyOn(sourceAccount, 'fetchBalance')
+        .mockResolvedValue(mockedBalance);
+      await expect(sourceAccount.synchronizeBalance()).rejects.toThrow(
+        SynchronizationFailedError,
+      );
+      expect(sourceAccount.getBalance()).toBe(initialBalance);
+    },
+    TEST_TIMEOUT_MS,
+  );
 });
