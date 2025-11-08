@@ -72,14 +72,11 @@ describe('doStuffByInterval', () => {
   });
 
   test('should call callback multiple times after multiple intervals', () => {
+    const counter = 3;
     doStuffByInterval(fakeCallback, TIME);
     expect(fakeCallback).not.toHaveBeenCalled();
-    jest.advanceTimersByTime(TIME);
-    expect(fakeCallback).toHaveBeenCalledTimes(1);
-    jest.advanceTimersByTime(TIME);
-    expect(fakeCallback).toHaveBeenCalledTimes(2);
-    jest.advanceTimersByTime(TIME);
-    expect(fakeCallback).toHaveBeenCalledTimes(3);
+    jest.advanceTimersByTime(TIME * counter);
+    expect(fakeCallback).toHaveBeenCalledTimes(counter);
   });
 });
 
